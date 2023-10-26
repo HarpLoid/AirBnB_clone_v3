@@ -157,6 +157,9 @@ No known bugs at this time.
 ## Basic mod
 we are adding basic config like API's etc
 ## Authors
+Alexa Orrico - Github / Twitter
+Jennifer Huang - Github / Twitter
+
 Akoh Inmiogbegbile - [Github](https://github.com/akohinmiogbegbile) / [Twitter](https://twitter.com/Akohinmi90A)
   
 Harp Fanawopo - [Github](https://github.com/Harploid) / [Twitter](https://twitter.com/Harploid)
