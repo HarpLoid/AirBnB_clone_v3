@@ -152,11 +152,15 @@ EOF  all  create  destroy  help  quit  show  update
 
 ## Bugs
 No known bugs at this time. 
+26/10/23
 
+## Basic mod
+we are adding basic config like API's etc
 ## Authors
-Alexa Orrico - [Github](https://github.com/alexaorrico) / [Twitter](https://twitter.com/alexa_orrico)  
-Jennifer Huang - [Github](https://github.com/jhuang10123) / [Twitter](https://twitter.com/earthtojhuang)
+Akoh Inmiogbegbile - [Github](https://github.com/akohinmiogbegbile) / [Twitter](https://twitter.com/Akohinmi90A)
+  
+Harp Fanawopo - [Github](https://github.com/Harploid) / [Twitter](https://twitter.com/Harploid)
 
-Second part of Airbnb: Joann Vuong
 ## License
 Public Domain. No copy write protection. 
+
