@@ -4,8 +4,12 @@ Module - index
 Index for API
 """
 from api.v1.views import app_views
+from flask import jsonify
 
 
-@app_views.route("/status", strict_slashes=False)
+@app_views.route("/status")
 def api_status():
-    return {"status": "OK"}
+    """
+    returns JSON of status
+    """
+    return jsonify({"status": "OK"})
