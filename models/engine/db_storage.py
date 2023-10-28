@@ -16,14 +16,14 @@ import sqlalchemy
 from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
 
-classes = {"Amenity": Amenity, "City": City,
-           "Place": Place, "Review": Review, "State": State, "User": User}
-
 
 class DBStorage:
     """interaacts with the MySQL database"""
     __engine = None
     __session = None
+    __classes = {"Amenity": Amenity, "City": City,
+                 "Place": Place, "Review": Review,
+                 "State": State, "User": User}
 
     def __init__(self):
         """Instantiate a DBStorage object"""
@@ -43,9 +43,9 @@ class DBStorage:
     def all(self, cls=None):
         """query on the current database session"""
         new_dict = {}
-        for clss in classes:
-            if cls is None or cls is classes[clss] or cls is clss:
-                objs = self.__session.query(classes[clss]).all()
+        for clss in self.__classes:
+            if cls is None or cls is self.__classes[clss] or cls is clss:
+                objs = self.__session.query(self.__classes[clss]).all()
                 for obj in objs:
                     key = obj.__class__.__name__ + '.' + obj.id
                     new_dict[key] = obj
@@ -67,7 +67,8 @@ class DBStorage:
     def reload(self):
         """reloads data from the database"""
         Base.metadata.create_all(self.__engine)
-        sess_factory = sessionmaker(bind=self.__engine, expire_on_commit=False)
+        sess_factory = sessionmaker(bind=self.__engine,
+                                    expire_on_commit=False)
         Session = scoped_session(sess_factory)
         self.__session = Session
 
@@ -80,7 +81,7 @@ class DBStorage:
         Retrives an object based on it's Class and ID
         """
         class_objs = self.all(cls=cls)
-        class_obj = cls.__name__ + '.' + id
+        class_obj = self.__classes[cls].__name__ + '.' + id
         if class_obj in class_objs:
             return class_objs.get(class_obj)
         return None
@@ -93,7 +94,7 @@ class DBStorage:
         class_count = 0
         if cls:
             for class_obj in class_dict:
-                if cls.__name__ in class_obj:
+                if self.__classes[cls].__name__ in class_obj:
                     class_count += 1
             return class_count
         return len(class_dict)

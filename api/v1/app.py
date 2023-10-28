@@ -4,7 +4,7 @@ Module - app
 Flask app instance
 """
 from api.v1.views import app_views
-from flask import Flask
+from flask import Flask, jsonify, make_response
 from models import storage
 from os import getenv
 
@@ -20,6 +20,15 @@ def teardown(self):
     each request
     """
     storage.close()
+
+
+@app.errorhandler(404)
+def error_404_page(err):
+    """
+    Returns a JSON-formatted 404 status code response.
+    """
+    return make_response(jsonify({'error': 'Not found'}),
+                         404)
 
 
 if __name__ == "__main__":
