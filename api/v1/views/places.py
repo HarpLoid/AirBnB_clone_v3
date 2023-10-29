@@ -7,7 +7,7 @@ RESTFul API actions
 """
 from flask import abort, jsonify, request
 from api.v1.views import app_views
-from models.city import City
+from models.state import City
 from models import storage
 
 
@@ -84,9 +84,8 @@ def update_city(city_id):
     obj = storage.get('City', city_id)
     if obj is None:
         abort(404)
-    ignore_list = ['id', 'created_at', 'updated_at']
     for k, v in content.items():
-        if hasattr(obj, k) and k not in ignore_list:
+        if hasattr(obj, k):
             setattr(obj, k, v)
     obj.save()
     return jsonify(obj.to_dict()), 200

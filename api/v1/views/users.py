@@ -1,48 +1,48 @@
 #!/usr/bin/python3
 """
-Module - state
-View for State objects
+Module - users
+View for User objects
 that handles all default
 RESTFul API actions
 """
 from flask import abort, jsonify, request
 from api.v1.views import app_views
-from models.state import State
+from models.user import User
 from models import storage
 
 
-@app_views.route('/states', methods=['GET'],
+@app_views.route('/users', methods=['GET'],
                  strict_slashes=False)
-def get_states():
+def get_users():
     """
-    Retrieves the list of all State objects
+    Retrieves the list of all User objects
     """
-    obj_dict = storage.all('State')
-    state_list = []
+    obj_dict = storage.all('User')
+    user_list = []
     for obj in obj_dict.values():
-        state_list.append(obj.to_dict())
-    return jsonify(state_list)
+        user_list.append(obj.to_dict())
+    return jsonify(user_list)
 
 
-@app_views.route('/states/<state_id>', methods=['GET'],
+@app_views.route('/users/<user_id>', methods=['GET'],
                  strict_slashes=False)
-def get_state_id(state_id):
+def get_user_id(user_id):
     """
-    Retrieves a State object
+    Retrieves a User object
     """
-    obj = storage.get('State', state_id)
+    obj = storage.get('User', user_id)
     if obj is None:
         abort(404)
     return jsonify(obj.to_dict())
 
 
-@app_views.route('/states/<state_id>', methods=['DELETE'],
+@app_views.route('/users/<user_id>', methods=['DELETE'],
                  strict_slashes=False)
-def delete_state(state_id):
+def delete_user(user_id):
     """
-    Deletes a State object
+    Deletes a User object
     """
-    obj = storage.get('State', state_id)
+    obj = storage.get('User', user_id)
     if obj is None:
         abort(404)
     obj.delete()
@@ -50,37 +50,39 @@ def delete_state(state_id):
     return jsonify({}), 200
 
 
-@app_views.route('/states/', methods=['POST'],
+@app_views.route('/users/', methods=['POST'],
                  strict_slashes=False)
-def create_state():
+def create_user():
     """
-    Creates a State
+    Creates a User
     """
     content = request.get_json()
     if not content:
         return jsonify({'error': 'Not a JSON'}), 400
-    elif 'name' not in content:
-        return jsonify({'error': 'Missing name'}), 400
+    elif 'email' not in content:
+        return jsonify({'error': 'Missing email'}), 400
+    elif 'password' not in content:
+        return jsonify({'error': 'Missing password'}), 400
     else:
-        obj_updt = State(**content)
+        obj_updt = User(**content)
         obj_updt.save()
         return jsonify(obj_updt.to_dict()), 201
 
 
-@app_views.route('/states/<state_id>', methods=['PUT'],
+@app_views.route('/users/<user_id>', methods=['PUT'],
                  strict_slashes=False)
-def update_state(state_id):
+def update_user(user_id):
     """
-    Updates a State object
+    Updates a User object
     """
     content = request.get_json()
     if not content:
         return jsonify({'error': 'Not a JSON'}), 400
 
-    obj = storage.get('State', state_id)
+    obj = storage.get('User', user_id)
     if obj is None:
         abort(404)
-    ignore_list = ['id', 'created_at', 'updated_at']
+    ignore_list = ['id', 'created_at', 'updated_at', 'email']
     for k, v in content.items():
         if hasattr(obj, k) and k not in ignore_list:
             setattr(obj, k, v)

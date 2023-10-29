@@ -1,48 +1,48 @@
 #!/usr/bin/python3
 """
-Module - state
-View for State objects
+Module - amenity
+View for Amenity objects
 that handles all default
 RESTFul API actions
 """
 from flask import abort, jsonify, request
 from api.v1.views import app_views
-from models.state import State
+from models.amenity import Amenity
 from models import storage
 
 
-@app_views.route('/states', methods=['GET'],
+@app_views.route('/amenities', methods=['GET'],
                  strict_slashes=False)
-def get_states():
+def get_amenities():
     """
-    Retrieves the list of all State objects
+    Retrieves the list of all Amenity objects
     """
-    obj_dict = storage.all('State')
-    state_list = []
+    obj_dict = storage.all('Amenity')
+    amenity_list = []
     for obj in obj_dict.values():
-        state_list.append(obj.to_dict())
-    return jsonify(state_list)
+        amenity_list.append(obj.to_dict())
+    return jsonify(amenity_list)
 
 
-@app_views.route('/states/<state_id>', methods=['GET'],
+@app_views.route('/amenities/<amenity_id>', methods=['GET'],
                  strict_slashes=False)
-def get_state_id(state_id):
+def get_amenity_id(amenity_id):
     """
-    Retrieves a State object
+    Retrieves a Amenity object
     """
-    obj = storage.get('State', state_id)
+    obj = storage.get('Amenity', amenity_id)
     if obj is None:
         abort(404)
     return jsonify(obj.to_dict())
 
 
-@app_views.route('/states/<state_id>', methods=['DELETE'],
+@app_views.route('/amenities/<amenity_id>', methods=['DELETE'],
                  strict_slashes=False)
-def delete_state(state_id):
+def delete_amenity(amenity_id):
     """
-    Deletes a State object
+    Deletes a Amenity object
     """
-    obj = storage.get('State', state_id)
+    obj = storage.get('Amenity', amenity_id)
     if obj is None:
         abort(404)
     obj.delete()
@@ -50,11 +50,11 @@ def delete_state(state_id):
     return jsonify({}), 200
 
 
-@app_views.route('/states/', methods=['POST'],
+@app_views.route('/amenities/', methods=['POST'],
                  strict_slashes=False)
-def create_state():
+def create_amenity():
     """
-    Creates a State
+    Creates a Amenity
     """
     content = request.get_json()
     if not content:
@@ -62,22 +62,22 @@ def create_state():
     elif 'name' not in content:
         return jsonify({'error': 'Missing name'}), 400
     else:
-        obj_updt = State(**content)
+        obj_updt = Amenity(**content)
         obj_updt.save()
         return jsonify(obj_updt.to_dict()), 201
 
 
-@app_views.route('/states/<state_id>', methods=['PUT'],
+@app_views.route('/amenities/<amenity_id>', methods=['PUT'],
                  strict_slashes=False)
-def update_state(state_id):
+def update_amenity(amenity_id):
     """
-    Updates a State object
+    Updates a Amenity object
     """
     content = request.get_json()
     if not content:
         return jsonify({'error': 'Not a JSON'}), 400
 
-    obj = storage.get('State', state_id)
+    obj = storage.get('Amenity', amenity_id)
     if obj is None:
         abort(404)
     ignore_list = ['id', 'created_at', 'updated_at']
