@@ -24,6 +24,7 @@ def places_by_city(city_id):
         places.append(city.to_dict())
     return jsonify(places)
 
+
 @app_views.route('/places/<place_id>', methods=['GET'],
                  strict_slashes=False)
 def get_place_id(place_id):
@@ -34,6 +35,7 @@ def get_place_id(place_id):
     if city is None:
         abort(404)
     return jsonify(city.to_dict())
+
 
 @app_views.route('/places/<place_id>', methods=['DELETE'],
                  strict_slashes=False)
