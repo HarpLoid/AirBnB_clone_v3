@@ -1,48 +1,47 @@
 #!/usr/bin/python3
 """
-Module - cities
-View for City objects
+Module - reviews
+View for Review objects
 that handles all default
 RESTFul API actions
 """
 from flask import abort, jsonify, request
 from api.v1.views import app_views
-from models.state import City
+from models.review import Review
 from models import storage
 
 
-@app_views.route('/states/<state_id>/cities', methods=['GET'],
+@app_views.route('/places/<place_id>/reviews', methods=['GET'],
                  strict_slashes=False)
-def cities_by_state(state_id):
-    # all_cities = storage.all(City)
-    state = storage.get("State", state_id)
-    cities = []
+def reviews_by_place(place_id):
+    place = storage.get("Place", place_id)
+    reviews = []
 
-    if state is None:
+    if place is None:
         abort(404)
 
-    for city in state.cities:
-        cities.append(city.to_dict())
-    return jsonify(cities)
+    for place in place.reviews:
+        reviews.append(place.to_dict())
+    return jsonify(reviews)
 
-@app_views.route('/cities/<city_id>', methods=['GET'],
+@app_views.route('/reviews/<review_id>', methods=['GET'],
                  strict_slashes=False)
-def get_city_id(city_id):
+def get_review_id(review_id):
     """
-    Retrieves a City object
+    Retrieves a Review object
     """
-    city = storage.get('City', city_id)
-    if city is None:
+    review = storage.get('Review', review_id)
+    if review is None:
         abort(404)
-    return jsonify(city.to_dict())
+    return jsonify(review.to_dict())
 
-@app_views.route('/cities/<city_id>', methods=['DELETE'],
+@app_views.route('/reviews/<review_id>', methods=['DELETE'],
                  strict_slashes=False)
-def delete_city(city_id):
+def delete_review(review_id):
     """
-    Deletes a City object
+    Deletes a Review object
     """
-    obj = storage.get('City', city_id)
+    obj = storage.get('Review', review_id)
     if obj is None:
         abort(404)
     obj.delete()
@@ -50,42 +49,48 @@ def delete_city(city_id):
     return jsonify({}), 200
 
 
-@app_views.route('/states/<state_id>/cities', methods=['POST'],
+@app_views.route('/places/<place_id>/reviews', methods=['POST'],
                  strict_slashes=False)
-def create_city(state_id):
+def create_review(place_id):
     """
-    Creates a City
+    Creates a Review
     """
     content = request.get_json()
     if not content:
         return jsonify({'error': 'Not a JSON'}), 400
-    elif 'name' not in content:
+    elif 'user_id' not in content:
+        return jsonify({'error': 'Missing user_id'}), 400
+    elif 'text' not in content:
         return jsonify({'error': 'Missing name'}), 400
     else:
-        state = storage.get("State", state_id)
-        if state is None:
+        place = storage.get('Place', place_id)
+        user = storage.get('User', content['user_id'])
+        if (place is None) or (user is None):
             abort(404)
-        content['state_id'] = state_id
-        obj_updt = City(**content)
+        content['place_id'] = place.id
+        content['user_id'] = user.id
+        obj_updt = Review(**content)
         obj_updt.save()
         return jsonify(obj_updt.to_dict()), 201
 
 
-@app_views.route('/cities/<city_id>', methods=['PUT'],
+@app_views.route('/reviews/<review_id>', methods=['PUT'],
                  strict_slashes=False)
-def update_city(city_id):
+def update_review(review_id):
     """
-    Updates a City object
+    Updates a Review object
     """
     content = request.get_json()
     if not content:
         return jsonify({'error': 'Not a JSON'}), 400
 
-    obj = storage.get('City', city_id)
+    obj = storage.get('Review', review_id)
     if obj is None:
         abort(404)
+    ignore_list = ['id', 'created_at', 'updated_at',
+                   'user_id', 'place_id']
     for k, v in content.items():
-        if hasattr(obj, k):
+        if hasattr(obj, k) and k not in ignore_list:
             setattr(obj, k, v)
     obj.save()
     return jsonify(obj.to_dict()), 200

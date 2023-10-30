@@ -65,7 +65,7 @@ def create_city(state_id):
         state = storage.get("State", state_id)
         if state is None:
             abort(404)
-        content['state_id'] = state_id
+        content['state_id'] = state.id
         obj_updt = City(**content)
         obj_updt.save()
         return jsonify(obj_updt.to_dict()), 201
